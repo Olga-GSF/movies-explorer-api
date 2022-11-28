@@ -44,7 +44,7 @@ const createMovies = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequestErr(ERROR_MESSAGE.GET_CARDS_ERROR));
+        return next(new BadRequestErr(ERROR_MESSAGE.GET_MOVIES_ERROR));
       }
       return next(err);
     });
@@ -63,7 +63,7 @@ const deleteMovieById = (req, res, next) => {
   Movie.findById(req.params.movieId)
     .then((movie) => {
       if (!movie) {
-        throw new NotFoundErr(ERROR_MESSAGE.DELETE_CARDSID_ERROR);
+        throw new NotFoundErr(ERROR_MESSAGE.DELETE_MOVIESID_ERROR);
       }
       if (movie.owner.toString() !== req.user._id) {
         throw new ForbbidenErr(ERROR_MESSAGE.REFUSAL_TO_DELETE);
@@ -73,7 +73,7 @@ const deleteMovieById = (req, res, next) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        return next(new BadRequestErr(ERROR_MESSAGE.DELETE_CARDSID_ERROR));
+        return next(new BadRequestErr(ERROR_MESSAGE.DELETE_MOVIESID_ERROR));
       }
       return next(err);
     });

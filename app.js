@@ -1,4 +1,4 @@
-// require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -43,4 +43,6 @@ app.use(errorLogger);
 app.use(errors());
 app.use(centralizedErr);
 
-app.listen(PORT);
+app.listen(PORT, () => {
+  console.log(`Listening on ${PORT}`);
+});
