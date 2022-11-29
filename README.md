@@ -25,5 +25,6 @@ npm run dev — запускает сервер с hot-reload
 
 Ссылка на GitHub https://github.com/Olga-GSF/movies-explorer-api/tree/level-1
 Публичный IP-адрес сервера - 51.250.106.162
+Домен: https://api.movies-olga.nomoredomains.icu
 
 Контакты Olga-GSF - Olga-GSF@example.com

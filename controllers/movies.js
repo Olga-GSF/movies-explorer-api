@@ -10,35 +10,7 @@ const ForbbidenErr = require('../errors/ForbiddenErr');
 const BadRequestErr = require('../errors/BadRequestErr');
 
 const createMovies = (req, res, next) => {
-  const {
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailerLink,
-    nameRU,
-    nameEN,
-    thumbnail,
-    movieId,
-  } = req.body;
-  const owner = req.user._id;
-
-  Movie.create({
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailerLink,
-    nameRU,
-    nameEN,
-    thumbnail,
-    movieId,
-    owner,
-  })
+  Movie.create({ ...req.body, owner: req.user._id })
     .then((movie) => {
       res.status(STATUS_CODES.SUCCESS).send({ data: movie });
     })

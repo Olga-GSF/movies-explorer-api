@@ -6,13 +6,14 @@ const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const helmet = require('helmet');
 const cors = require('cors');
-const router = require('./routes/index');
+const router = require('./routes');
 const limiter = require('./middlewares/rate-limiter');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { MONGO_URL } = require('./utils/configUrl');
 
 const centralizedErr = require('./middlewares/centralizedErr');
 
-const { PORT = 3002, MONGO_URL = 'mongodb://localhost:27017/moviesdb' } = process.env;
+const { PORT = 3002 } = process.env;
 
 mongoose.connect(MONGO_URL);
 

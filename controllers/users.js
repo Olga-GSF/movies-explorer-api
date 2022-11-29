@@ -73,34 +73,56 @@ const updateUser = (req, res, next) => {
   ).orFail(new NotFoundErr(ERROR_MESSAGE.ID_NOT_FOUND))
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return next(new BadRequestErr(ERROR_MESSAGE.GET_USER_ERROR));
+      if (err.code === 11000) {
+        next(new ConflictErr(ERROR_MESSAGE.EXISTING_EMAIL));
+      } else if (err.name === 'ValidationError') {
+        next(new BadRequestErr(ERROR_MESSAGE.GET_USER_ERROR));
+      } else {
+        next(err);
       }
-      return next(err);
     });
 };
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-  User.findOne({ email }).select('+password')
+  User.findUserByCredentials(email, password)
     .then((user) => {
-      bcrypt.compare(password, user.password)
-        .then(() => {
-          const token = jwt.sign(
-            { _id: user._id },
-            NODE_ENV === 'production' ? JWT_SECRET : 'secret-key',
-            { expiresIn: '7d' },
-          );
-          res.cookie('jwt', token, {
-            maxAge: 3600000 * 12 * 7,
-            httpOnly: true,
-            sameSite: true,
-          })
-            .send({ token });
-        });
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'secret-key',
+        { expiresIn: '7d' },
+      );
+      res.cookie('jwt', token, {
+        maxAge: 3600000 * 12 * 7,
+        httpOnly: true,
+        sameSite: true,
+      })
+        .send({ token });
     })
     .catch(next);
 };
+
+// const login = (req, res, next) => {
+//   const { email, password } = req.body;
+//   User.findOne({ email }).select('+password')
+//     .then((user) => {
+//       bcrypt.compare(password, user.password)
+//         .then(() => {
+//           const token = jwt.sign(
+//             { _id: user._id },
+//             NODE_ENV === 'production' ? JWT_SECRET : 'secret-key',
+//             { expiresIn: '7d' },
+//           );
+//           res.cookie('jwt', token, {
+//             maxAge: 3600000 * 12 * 7,
+//             httpOnly: true,
+//             sameSite: true,
+//           })
+//             .send({ token });
+//         });
+//     })
+//     .catch(next);
+// };
 
 module.exports = {
   createUser,
